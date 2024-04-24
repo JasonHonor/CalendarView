@@ -2,15 +2,14 @@ package com.haibin.calendarviewproject;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-
-import androidx.appcompat.app.AlertDialog;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
@@ -317,49 +316,33 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_flyme:
+            if(v.getId()==R.id.ll_flyme) {
                 MeiZuActivity.show(this);
                 //CalendarActivity.show(this);
-
-                break;
-            case R.id.ll_custom:
+            }else if(v.getId()==R.id.ll_custom) {
                 CustomActivity.show(this);
-                break;
-            case R.id.ll_mix:
+            } else if(v.getId()==R.id.ll_mix) {
                 MixActivity.show(this);
-                break;
-            case R.id.ll_full:
+            }else if(v.getId()==R.id.ll_full) {
                 FullActivity.show(this);
-                break;
-            case R.id.ll_range:
+            }else if(v.getId()==R.id.ll_range) {
                 RangeActivity.show(this);
-                break;
-            case R.id.ll_simple:
+            }else if(v.getId()==R.id.ll_simple) {
                 SimpleActivity.show(this);
-                break;
-            case R.id.ll_colorful:
+            }else if(v.getId()==R.id.ll_colorful) {
                 ColorfulActivity.show(this);
-                break;
-            case R.id.ll_index:
+            }else if(v.getId()==R.id.ll_index) {
                 IndexActivity.show(this);
-                break;
-            case R.id.ll_tab:
+            }else if(v.getId()==R.id.ll_tab) {
                 ViewPagerActivity.show(this);
-                break;
-            case R.id.ll_single:
+            }else if(v.getId()==R.id.ll_single) {
                 SingleActivity.show(this);
-                break;
-            case R.id.ll_multi:
+            }else if(v.getId()==R.id.ll_multi) {
                 MultiActivity.show(this);
-                break;
-            case R.id.ll_solar_system:
+            }else if(v.getId()==R.id.ll_solar_system) {
                 SolarActivity.show(this);
-                break;
-            case R.id.ll_progress:
+            }else if(v.getId()==R.id.ll_progress) {
                 ProgressActivity.show(this);
-                break;
-
         }
     }
 

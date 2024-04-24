@@ -132,48 +132,41 @@ public class RangeActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_title:
+        if(v.getId()==R.id.tv_title) {
+        } else if(v.getId()==R.id.iv_clear) {
+            mCalendarView.clearSelectRange();
+            mTextLeftWeek.setText("开始日期");
+            mTextRightWeek.setText("结束日期");
+            mTextLeftDate.setText("");
+            mTextRightDate.setText("");
+            //mCalendarView.setSelectCalendarRange(2018,10,13,2018,10,13);
+        }else if(v.getId()==R.id.iv_reduce) {
 
-                break;
-            case R.id.iv_clear:
-                mCalendarView.clearSelectRange();
-                mTextLeftWeek.setText("开始日期");
-                mTextRightWeek.setText("结束日期");
-                mTextLeftDate.setText("");
-                mTextRightDate.setText("");
-                //mCalendarView.setSelectCalendarRange(2018,10,13,2018,10,13);
-                break;
-            case R.id.iv_reduce:
-
-                mCalendarHeight -= dipToPx(this, 8);
-                if (mCalendarHeight <= dipToPx(this, 46)) {
-                    mCalendarHeight = dipToPx(this, 46);
-                }
-                mCalendarView.setCalendarItemHeight(mCalendarHeight);
-                break;
-            case R.id.iv_increase:
-                mCalendarHeight += dipToPx(this, 8);
-                if (mCalendarHeight >= dipToPx(this, 90)) {
-                    mCalendarHeight = dipToPx(this, 90);
-                }
-                mCalendarView.setCalendarItemHeight(mCalendarHeight);
-                break;
-            case R.id.tv_commit:
-                List<Calendar> calendars = mCalendarView.getSelectCalendarRange();
-                if (calendars == null || calendars.size() == 0) {
-                    return;
-                }
-                for (Calendar c : calendars) {
-                    Log.e("SelectCalendarRange", c.toString()
-                            + " -- " + c.getScheme()
-                            + "  --  " + c.getLunar());
-                }
-                Toast.makeText(this, String.format("选择了%s个日期: %s —— %s", calendars.size(),
-                        calendars.get(0).toString(), calendars.get(calendars.size() - 1).toString()),
-                        Toast.LENGTH_SHORT).show();
-                break;
-        }
+            mCalendarHeight -= dipToPx(this, 8);
+            if (mCalendarHeight <= dipToPx(this, 46)) {
+                mCalendarHeight = dipToPx(this, 46);
+            }
+            mCalendarView.setCalendarItemHeight(mCalendarHeight);
+        } else if(v.getId()==R.id.iv_increase) {
+            mCalendarHeight += dipToPx(this, 8);
+            if (mCalendarHeight >= dipToPx(this, 90)) {
+                mCalendarHeight = dipToPx(this, 90);
+            }
+            mCalendarView.setCalendarItemHeight(mCalendarHeight);
+        } else if(v.getId()==R.id.tv_commit) {
+            List<Calendar> calendars = mCalendarView.getSelectCalendarRange();
+            if (calendars == null || calendars.size() == 0) {
+                return;
+            }
+            for (Calendar c : calendars) {
+                Log.e("SelectCalendarRange", c.toString()
+                        + " -- " + c.getScheme()
+                        + "  --  " + c.getLunar());
+            }
+            Toast.makeText(this, String.format("选择了%s个日期: %s —— %s", calendars.size(),
+                            calendars.get(0).toString(), calendars.get(calendars.size() - 1).toString()),
+                    Toast.LENGTH_SHORT).show();
+            }
     }
 
     /**

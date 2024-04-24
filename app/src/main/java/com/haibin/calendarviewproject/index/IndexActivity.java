@@ -3,11 +3,12 @@ package com.haibin.calendarviewproject.index;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
@@ -16,11 +17,11 @@ import com.haibin.calendarviewproject.Article;
 import com.haibin.calendarviewproject.ArticleAdapter;
 import com.haibin.calendarviewproject.R;
 import com.haibin.calendarviewproject.base.activity.BaseActivity;
-import com.haibin.calendarviewproject.colorful.ColorfulActivity;
 import com.haibin.calendarviewproject.group.GroupItemDecoration;
 import com.haibin.calendarviewproject.group.GroupRecyclerView;
 import com.haibin.calendarviewproject.meizu.MeiZuActivity;
 import com.haibin.calendarviewproject.simple.SimpleActivity;
+import com.haibin.calendarviewproject.single.SingleActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -135,19 +136,16 @@ public class IndexActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_flyme:
-                MeiZuActivity.show(this);
-                break;
-            case R.id.ll_simple:
-                SimpleActivity.show(this);
-                break;
-            case R.id.ll_colorful:
-                ColorfulActivity.show(this);
-                break;
-            case R.id.ll_index:
-                IndexActivity.show(this);
-                break;
+        if(v.getId()==R.id.ll_flyme) {
+            MeiZuActivity.show(this);
+        }else if(v.getId()==R.id.ll_simple){
+            SimpleActivity.show(this);
+        }
+        else if(v.getId()==R.id.ll_colorful){
+            SingleActivity.show(this);
+        }
+        else if(v.getId()==R.id.ll_index) {
+            IndexActivity.show(this);
         }
     }
 

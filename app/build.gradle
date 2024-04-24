@@ -2,13 +2,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    namespace 'com.haibin.calendarviewproject'
+    compileSdkVersion 34
     //noinspection GradleDependency
     defaultConfig {
         applicationId "com.haibin.calendarviewproject"
         minSdkVersion 15
         //noinspection OldTargetApi
-        targetSdkVersion 28
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -17,19 +18,23 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
+    }
+    lintOptions {
+        disable 'NonConstantResourceId'
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
 
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.11.0'
 
     implementation 'com.github.bumptech.glide:glide:4.5.0'
 

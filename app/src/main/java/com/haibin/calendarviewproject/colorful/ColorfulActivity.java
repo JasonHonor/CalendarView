@@ -3,10 +3,11 @@ package com.haibin.calendarviewproject.colorful;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
@@ -132,19 +133,15 @@ public class ColorfulActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_flyme:
-                MeiZuActivity.show(this);
-                break;
-            case R.id.ll_simple:
-                SimpleActivity.show(this);
-                break;
-            case R.id.ll_colorful:
-                ColorfulActivity.show(this);
-                break;
-            case R.id.ll_index:
-                IndexActivity.show(this);
-                break;
+
+        if(v.getId()==R.id.ll_flyme) {
+            MeiZuActivity.show(this);
+        }else if(v.getId()==R.id.ll_simple) {
+            SimpleActivity.show(this);
+        } else if(v.getId()==R.id.ll_colorful) {
+            ColorfulActivity.show(this);
+        } else if(v.getId()==R.id.ll_index) {
+            IndexActivity.show(this);
         }
     }
 

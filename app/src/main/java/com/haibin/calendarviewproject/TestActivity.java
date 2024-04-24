@@ -39,13 +39,11 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_next:
-                mCalendarView.scrollToNext(false);
-                break;
-            case R.id.iv_pre:
-                mCalendarView.scrollToPre(false);
-                break;
+
+        if(v.getId()==R.id.iv_next) {
+            mCalendarView.scrollToNext(false);
+        }else if(v.getId()==R.id.iv_pre){
+            mCalendarView.scrollToPre(false);
         }
     }
 }

@@ -3,12 +3,13 @@ package com.haibin.calendarviewproject.single;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
@@ -148,20 +149,17 @@ public class SingleActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_flyme:
+            if(v.getId()==R.id.ll_flyme) {
                 MeiZuActivity.show(this);
-                break;
-            case R.id.ll_simple:
+            }else if(v.getId()==R.id.ll_simple){
                 SimpleActivity.show(this);
-                break;
-            case R.id.ll_colorful:
+            }
+            else if(v.getId()==R.id.ll_colorful){
                 SingleActivity.show(this);
-                break;
-            case R.id.ll_index:
+            }
+            else if(v.getId()==R.id.ll_index) {
                 IndexActivity.show(this);
-                break;
-        }
+            }
     }
 
     private Calendar getSchemeCalendar(int year, int month, int day, int color, String text) {

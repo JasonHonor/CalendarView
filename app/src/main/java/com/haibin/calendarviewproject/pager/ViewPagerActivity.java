@@ -3,11 +3,12 @@ package com.haibin.calendarviewproject.pager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.haibin.calendarview.Calendar;
@@ -151,19 +152,15 @@ public class ViewPagerActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_flyme:
-                MeiZuActivity.show(this);
-                break;
-            case R.id.ll_simple:
-                SimpleActivity.show(this);
-                break;
-            case R.id.ll_colorful:
-                ColorfulActivity.show(this);
-                break;
-            case R.id.ll_index:
-                IndexActivity.show(this);
-                break;
+
+        if(v.getId()==R.id.ll_flyme) {
+            MeiZuActivity.show(this);
+        }else if(v.getId()==R.id.ll_simple) {
+            SimpleActivity.show(this);
+        } else if(v.getId()==R.id.ll_colorful) {
+            ColorfulActivity.show(this);
+        } else if(v.getId()==R.id.ll_index) {
+            IndexActivity.show(this);
         }
     }
 
