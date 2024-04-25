@@ -11,6 +11,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/calendarview/CalendarView.calendarview.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/calendarview/CalendarView.calendarview.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/calendarview/CalendarView.calendarview.main.iml" filepath="$PROJECT_DIR$/.idea/modules/calendarview/CalendarView.calendarview.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/calendarview/CalendarView.calendarview.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/calendarview/CalendarView.calendarview.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/android-projects.CalendarView.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/android-projects.CalendarView.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/calendarview/android-projects.CalendarView.calendarview.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/calendarview/android-projects.CalendarView.calendarview.androidTest.iml" />
     </modules>
   </component>
 </project>

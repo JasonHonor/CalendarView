@@ -2,6 +2,7 @@ package com.haibin.calendarviewproject;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
@@ -32,9 +35,17 @@ import com.haibin.calendarviewproject.simple.SimpleActivity;
 import com.haibin.calendarviewproject.single.SingleActivity;
 import com.haibin.calendarviewproject.solay.SolarActivity;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class MainActivity extends BaseActivity implements
         CalendarView.OnCalendarSelectListener,
@@ -74,6 +85,9 @@ public class MainActivity extends BaseActivity implements
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView() {
+
+
+
         setStatusBarDarkMode();
         mTextMonthDay = findViewById(R.id.tv_month_day);
         mTextYear = findViewById(R.id.tv_year);
@@ -186,6 +200,156 @@ public class MainActivity extends BaseActivity implements
         mTextCurrentDay.setText(String.valueOf(mCalendarView.getCurDay()));
     }
 
+    // 下载公共节假日数据
+    class CalendarDay {
+        public String date;
+        public String name;
+        public boolean isOffDay;
+    }
+
+    class CalendarList {
+        public Map<String, CalendarDay> mHolidays;
+        public Map<String, CalendarDay> mWeekends;
+        public Map<String, CalendarDay> mWorkDays;
+    }
+
+    public class CalendarSyncThread extends Thread {
+        private String mYear;
+        private String mType;
+        private Map<String, CalendarDay> mHolidays;
+        public CalendarSyncThread(String type, String year) {
+            mYear = year;
+            mType =  type;
+        }
+
+        private void SaveFile(String sFile,String sContent) {
+            try {
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    FileOutputStream fos = new FileOutputStream(Environment.getExternalStorageDirectory().getCanonicalPath() + "/calendar/"+sFile);
+                    fos.write(sContent.getBytes());
+                    fos.close();
+                }
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private String LoadCache() {
+
+            String sCachedData = "";
+            try{
+                //check directory
+                File fds = new File(Environment.getExternalStorageDirectory().getCanonicalPath()+"/calendar/");
+                if(!fds.exists()) {
+                    fds.mkdirs();
+                    return "";
+                }
+
+                StringBuilder sb  = new StringBuilder();
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    //检查本地存储是否已经缓存了数据
+                    File fis = new File(Environment.getExternalStorageDirectory().getCanonicalPath()+"/calendar/cache-" + mType + "-" + mYear);
+                    if (fis.exists() && fis.canRead()) {
+                        if (fis.length() < 1024 * 1024) {
+                            FileInputStream fin = new FileInputStream(fis);
+
+                            byte[] tmp = new byte[1024];
+                            int len = 0;
+                            while ((len = fin.read(tmp)) > 0) {
+                                sb.append(new String(tmp, 0, len));
+                            }
+                            sCachedData = sb.toString();
+                            fin.close();
+                        }
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return sCachedData;
+        }
+        @Override
+        public void run() {
+
+            String sCachedData = LoadCache();
+
+            if(sCachedData.isEmpty()) {
+                try {
+                    //String url = "http://opendata.baidu.com/api.php?query=2020年5月&resource_id=6018&format=json";
+                    String url = "https://api.jiejiariapi.com/v1/" + mType + "/" + mYear;
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder().url(url).build();
+                    okhttp3.Response response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        String sResponse = response.body().string();
+                        if (sResponse.isEmpty()) {
+                            Log.e("DEMO", "okHttp is no response");
+                            return;
+                        }
+                        SaveFile("cache-" + mType + "-" + mYear, sResponse);
+                        //解析特殊的返回值结构 {"2022-12-31":{"date":"2022-12-31","name":"元旦","isOffDay":true},...}
+                        sCachedData = sResponse;
+                        //Log.i("DEMO", response.body().string());
+                    } else {
+                        Log.e("DEMO", "okHttp is request error");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            mHolidays = JSONObject.parseObject(sCachedData, new TypeReference<Map<String, CalendarDay>>() {
+            });
+            mHolidays = sortByKey(mHolidays, false);
+        }
+
+        public Map<String, CalendarDay> GetCalenderDays() {
+            return mHolidays;
+        }
+    }
+
+    public static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map, boolean isDesc) {
+        Map<K, V> result = new LinkedHashMap<K,V>();
+        if (isDesc) {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByKey().reversed())
+                    .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        } else {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByKey())
+                    .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        }
+        return result;
+    }
+
+    private CalendarList okHttp_SyncGet(String year) {
+        CalendarList calendarList = new CalendarList();
+
+        CalendarSyncThread thread1 = new CalendarSyncThread("holidays",year);
+        thread1.start();
+        CalendarSyncThread thread2 = new CalendarSyncThread("weekends",year);
+        thread2.start();
+        CalendarSyncThread thread3 = new CalendarSyncThread("workdays",year);
+        thread3.start();
+        try {
+            thread1.join();
+            thread2.join();
+            thread3.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        calendarList.mHolidays = thread1.GetCalenderDays();
+        calendarList.mWeekends = thread2.GetCalenderDays();
+        calendarList.mWorkDays = thread3.GetCalenderDays();
+
+        //合并数据
+        return calendarList;
+    }
+
+    private void mergeCalendarDays(Map<String, CalendarDay> holidays,Map<String, CalendarDay> weekends,Map<String,CalendarDay> workdays)
+    {
+        //数据合并：holiday+workdays+weekends
+    }
+
     @SuppressWarnings("unused")
     @Override
     protected void initData() {
@@ -194,12 +358,57 @@ public class MainActivity extends BaseActivity implements
         final int month = mCalendarView.getCurMonth();
 
         Map<String, Calendar> map = new HashMap<>();
-        for (int y = 1997; y < 2082; y++) {
+        for (int y = 2007 ; y < year+1; y++) {
+            CalendarList calendarList = okHttp_SyncGet(String.format("%d",y));
+            if(calendarList.mWorkDays==null || calendarList.mWeekends==null || calendarList.mHolidays==null)
+            {
+                continue;
+            }
             for (int m = 1; m <= 12; m++) {
+                //计算节假日，并填写标记
+                //https://api.jiejiariapi.com/v1/holidays/2024
+                //https://api.jiejiariapi.com/v1/weekends/2024
+                //https://api.jiejiariapi.com/v1/workdays/2024
+                for(int d = 1;d < 31; d++) {
+                    String sKey = String.format("%d-%02d-%02d",y,m,d);
 
+                    boolean bIsWeekendDay =false;
+                    boolean bIsWorkDay=false;
+                    boolean bIsHoliday=false;
+
+                    if(calendarList.mWeekends.get(sKey)!=null) {
+                        bIsWeekendDay=true;
+                    }
+
+                    if(calendarList.mHolidays!=null && calendarList.mHolidays.containsKey(sKey)) {
+                        CalendarDay holiday = calendarList.mHolidays.get(sKey);
+                        if(holiday!=null && holiday.isOffDay) {
+                            map.put(getSchemeCalendar(y, m, d, 0xFF40db25, "假").toString(),
+                                    getSchemeCalendar(y, m, d, 0xFF40db25, "假"));
+                            bIsHoliday=true;
+                        }
+                    }else {
+                        if(calendarList.mWorkDays.get(sKey)==null) {
+                            bIsWorkDay=true;
+                        }
+                    }
+
+                    if(bIsHoliday) {
+                        map.put(getSchemeCalendar(y, m, d, 0xFF40db25, "休").toString(),
+                                getSchemeCalendar(y, m, d, 0xFF40db25, "休"));
+                    }else if(bIsWeekendDay && bIsWorkDay) {
+                        map.put(getSchemeCalendar(y, m, d, 0xFF40db25, "休").toString(),
+                                getSchemeCalendar(y, m, d, 0xFF40db25, "休"));
+                    }else {
+                        if(bIsWeekendDay) {
+                            map.put(getSchemeCalendar(y, m, d, 0xFFe9a6fa, "班").toString(),
+                                    getSchemeCalendar(y, m, d, 0xFFe9a6fa, "班"));
+                        }
+                    }
+                }
+/*
                 map.put(getSchemeCalendar(y, m, 1, 0xFF40db25, "假").toString(),
                         getSchemeCalendar(y, m, 1, 0xFF40db25, "假"));
-
                 map.put(getSchemeCalendar(y, m, 2, 0xFFe69138, "游").toString(),
                         getSchemeCalendar(y, m, 2, 0xFFe69138, "游"));
                 map.put(getSchemeCalendar(y, m, 3, 0xFFdf1356, "事").toString(),
@@ -254,6 +463,7 @@ public class MainActivity extends BaseActivity implements
                         getSchemeCalendar(y, m, 27, 0xFF95af1a, "假"));
                 map.put(getSchemeCalendar(y, m, 28, 0xFF40db25, "码").toString(),
                         getSchemeCalendar(y, m, 28, 0xFF40db25, "码"));
+ */
             }
         }
 

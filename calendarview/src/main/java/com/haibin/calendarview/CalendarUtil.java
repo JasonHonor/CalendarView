@@ -812,4 +812,9 @@ public final class CalendarUtil {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
+    public static boolean isWorkDay(Calendar calendar) {
+        int week = getWeekFormCalendar(calendar);
+        return week == 0 || week == 6;
+    }
 }

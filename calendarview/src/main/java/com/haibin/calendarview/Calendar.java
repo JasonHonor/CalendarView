@@ -121,6 +121,10 @@ public final class Calendar implements Serializable, Comparable<Calendar> {
      */
     private Calendar lunarCalendar;
 
+    /*
+     * 判断是否为工作日
+     */
+    private boolean isWorkDay;
 
     public int getYear() {
         return year;
@@ -402,6 +406,14 @@ public final class Calendar implements Serializable, Comparable<Calendar> {
         setScheme("");
         setSchemeColor(0);
         setSchemes(null);
+    }
+
+    public boolean getWorkDay() {
+        return isWorkDay;
+    }
+
+    public void setWorkDay(boolean workDay) {
+        isWorkDay = workDay;
     }
 
     /**

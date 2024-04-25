@@ -373,6 +373,9 @@ public final class LunarCalendar {
             calendar.setLunar(lunarText);
         }
         lunarCalendar.setLunar(lunarText);
+
+        //设置是否为工作日
+        calendar.setWorkDay(CalendarUtil.isWorkDay(calendar));
     }
 
     /**

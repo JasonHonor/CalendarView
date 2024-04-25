@@ -92,7 +92,7 @@ public class FullActivity extends BaseActivity implements
         int month = mCalendarView.getCurMonth();
 
         Map<String, Calendar> map = new HashMap<>();
-        map.put(getSchemeCalendar(year, month, 3, 0xFF40db25, "假").toString(),
+        /*map.put(getSchemeCalendar(year, month, 3, 0xFF40db25, "假").toString(),
                 getSchemeCalendar(year, month, 3, 0xFF40db25, "假"));
         map.put(getSchemeCalendar(year, month, 6, 0xFFe69138, "事").toString(),
                 getSchemeCalendar(year, month, 6, 0xFFe69138, "事"));
@@ -112,6 +112,7 @@ public class FullActivity extends BaseActivity implements
                 getSchemeCalendar(year, month, 25, 0xFF13acf0, "假"));
         map.put(getSchemeCalendar(year, month, 27, 0xFF13acf0, "多").toString(),
                 getSchemeCalendar(year, month, 27, 0xFF13acf0, "多"));
+         */
         //此方法在巨大的数据量上不影响遍历性能，推荐使用
         mCalendarView.setSchemeDate(map);
     }
