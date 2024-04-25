@@ -372,8 +372,13 @@ public class MainActivity extends BaseActivity implements
                 for(int d = 1;d < 31; d++) {
                     String sKey = String.format("%d-%02d-%02d",y,m,d);
 
+                    //是否为周末
                     boolean bIsWeekendDay =false;
-                    boolean bIsWorkDay=false;
+
+                    //是否为休息日
+                    boolean bIsRestDay=false;
+
+                    //是否为假日
                     boolean bIsHoliday=false;
 
                     if(calendarList.mWeekends.get(sKey)!=null) {
@@ -383,26 +388,29 @@ public class MainActivity extends BaseActivity implements
                     if(calendarList.mHolidays!=null && calendarList.mHolidays.containsKey(sKey)) {
                         CalendarDay holiday = calendarList.mHolidays.get(sKey);
                         if(holiday!=null && holiday.isOffDay) {
-                            map.put(getSchemeCalendar(y, m, d, 0xFF40db25, "假").toString(),
-                                    getSchemeCalendar(y, m, d, 0xFF40db25, "假"));
+                            map.put(getSchemeCalendar(y, m, d, 0xFF40db25, "休").toString(),
+                                    getSchemeCalendar(y, m, d, 0xFF40db25, "休"));
                             bIsHoliday=true;
                         }
                     }else {
+                        //不是工作日，即为休息日
                         if(calendarList.mWorkDays.get(sKey)==null) {
-                            bIsWorkDay=true;
+                            bIsRestDay=true;
                         }
                     }
 
                     if(bIsHoliday) {
                         map.put(getSchemeCalendar(y, m, d, 0xFF40db25, "休").toString(),
                                 getSchemeCalendar(y, m, d, 0xFF40db25, "休"));
-                    }else if(bIsWeekendDay && bIsWorkDay) {
+                    }
+                    //周末，非休息日，则为工作日
+                    else if(bIsWeekendDay && bIsRestDay) {
                         map.put(getSchemeCalendar(y, m, d, 0xFF40db25, "休").toString(),
                                 getSchemeCalendar(y, m, d, 0xFF40db25, "休"));
                     }else {
                         if(bIsWeekendDay) {
-                            map.put(getSchemeCalendar(y, m, d, 0xFFe9a6fa, "班").toString(),
-                                    getSchemeCalendar(y, m, d, 0xFFe9a6fa, "班"));
+                            map.put(getSchemeCalendar(y, m, d, 0xFFf9a6fa, "班").toString(),
+                                    getSchemeCalendar(y, m, d, 0xFFf9a6fa, "班"));
                         }
                     }
                 }
